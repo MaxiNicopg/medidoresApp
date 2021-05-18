@@ -12,6 +12,9 @@ namespace MedidoresAPP.Threads
 {
     public class HiloCliente
     {
+        
+        List<int> medidores = new List<int> {1234, 1235, 1236, 1237, 1238};
+
         ServerSocket server;
         static IMensajeDetalladoDAL dal = MensajeDetalladoDALFactory.CreateDAL();
         public HiloCliente(ServerSocket server)
@@ -31,8 +34,38 @@ namespace MedidoresAPP.Threads
             mensajeCliente = server.Leer();
             Console.WriteLine(mensajeCliente);
             fechaServer = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            
+            //Se debe validar que el medidor este en el sistema
+            string[] validacion = mensajeCliente.Split('|');
+            Boolean existe = true;
+            foreach (int element in medidores)
+            {
+                if(element == Convert.ToInt32(validacion[1]))
+                {
+                    
+                    existe = true;
+                    break;
+                }
+                else
+                {
+                    existe = false;
+                }
+
+            } 
+            if(existe == false)
+            {
+                server.Escribir(fechaServer + '|' + validacion[1] + '|' + "ERROR");
+                server.CerrarConexion();
+                return;
+                
+            }
+            else
+            {
+                server.Escribir(fechaServer + "|WAIT");
+            
+
             //DateTime fecha = Convert.ToDateTime(fechaServer);
-            server.Escribir(fechaServer+"|WAIT");
+            
             fecha1 = DateTime.Now;
             mensajeCliente = server.Leer();
             Console.WriteLine(mensajeCliente);
@@ -49,10 +82,10 @@ namespace MedidoresAPP.Threads
             //TimeSpan diff = fechaCliente.Subtract(fecha);
             //if (diff.Minutes < 30)
             //{
-            for(int i = 0; i < textArray.Length; i++)
+            /*for(int i = 0; i < textArray.Length; i++)
             {
                 Console.WriteLine(textArray[i]);
-            }
+            }*/
             //nroMedidor = Int32.Parse(textArray[0]);
             if (fecha1.Subtract(fecha2).Minutes > 30) { server.CerrarConexion(); } else { 
             MensajeDetallado m = new MensajeDetallado()
@@ -69,14 +102,16 @@ namespace MedidoresAPP.Threads
                 lock (dal) { 
                 dal.SaveConsumo(m);
                 }
-                server.CerrarConexion();
+                        server.Escribir(nroMedidor + '|' + "OK");
+                        server.CerrarConexion();
             }
             else if (tipo.Contains("trafico"))
             {
                 lock (dal) { 
                 dal.SaveTrafico(m);
                 }
-                server.CerrarConexion();
+                        server.Escribir(nroMedidor + '|' + "OK");
+                        server.CerrarConexion();
             }
             }
             //}
@@ -84,7 +119,7 @@ namespace MedidoresAPP.Threads
             //{
             //    server.CerrarConexion();
             //}
-
+            }
         }
     }
 }

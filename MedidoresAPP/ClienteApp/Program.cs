@@ -22,6 +22,7 @@ namespace ClienteApp
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("Conectado a {0}:{1}", ip, puerto);
             ClienteSocket conServidor = new ClienteSocket(puerto, ip);
+            //do { 
             if (conServidor.Conectar())
             {
                 /*conServidor.Escribir("Hola mundo");
@@ -52,7 +53,7 @@ namespace ClienteApp
                         try { 
                             Console.WriteLine("Ingrese tipo del medidor");
                             tipo = Console.ReadLine().Trim().ToLower();
-                            if (tipo.Contains("consumo")) { }else if (tipo.Contains("trafico")) { } else { tipo = null;}
+                            if (tipo == "consumo") { }else if (tipo=="trafico") { } else { tipo = null;}
                         }catch (Exception ex) {
                             tipo = null;
                             Console.WriteLine("Ingrese un tipo correspondiente");
@@ -66,14 +67,18 @@ namespace ClienteApp
                     if (mensajeServidor.Contains("WAIT"))
                     {
 
-
                     }
                     else
                     {
-                        mensajeServidor = null;
+                        Console.WriteLine("El medidor ingresado no existe en el sistema");
+                        conServidor.CerrarConexion();
+                        return;
+                        
                     }
-                   
-                        do { 
+                     
+                   //} while (mensajeServidor.Contains("ERROR"));
+
+                    do { 
                             try { 
                                 Console.WriteLine("Ingrese valor:");
                                 valorValor = Convert.ToInt32(Console.ReadLine());
@@ -92,13 +97,13 @@ namespace ClienteApp
                     do { 
                                 Console.WriteLine("¿Desea ingresar estado?");
                                 respuesta = Console.ReadLine().Trim().ToLower();
-                                if (respuesta.Contains("si"))
+                                if (respuesta=="si")
                                 {
                                 Console.WriteLine("Ingrese estado");
                                 estado = Console.ReadLine();
                                 if (estado == "-1") { } else if (estado == "0") { } else if (estado == "1") { } else if (estado == "2") { } else { estado = "error"; }
                                 }   
-                                else if (respuesta.Contains("no"))
+                                else if (respuesta=="no")
                                 {
                                 estado = null;
                                 }
@@ -109,7 +114,6 @@ namespace ClienteApp
                                 }
                     } while (respuesta == null || estado == "error");
 
-                    
                 } while (mensajeServidor == string.Empty);
                     
                     
@@ -123,7 +127,8 @@ namespace ClienteApp
                 {
                     conServidor.Escribir(nroMedidor + '|' + fecha + '|' + tipo + '|' + valor + '|' +"sin lectura"+'|'+ "UPDATE");
                 }
-
+                mensajeServidor = conServidor.Leer();
+                Console.WriteLine(mensajeServidor);
                 conServidor.CerrarConexion();
                 Console.WriteLine("Conexión cerrada");
                 Console.ReadKey();
