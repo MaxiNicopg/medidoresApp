@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MedidoresModel.DTO;
+using Newtonsoft.Json;
 
 namespace MedidoresModel.DAL
 {
@@ -40,7 +41,7 @@ namespace MedidoresModel.DAL
 
                             MensajeDetallado m = new MensajeDetallado() { 
                                 NroSerie = Convert.ToInt32(textArray[0]),
-                                Fecha = Convert.ToDateTime(textArray[1]),
+                                Fecha = textArray[1],
                                 Tipo = textArray[2],
                                 Valor = Convert.ToInt32(textArray[3]),
                                 Estado = textArray[4]
@@ -64,6 +65,7 @@ namespace MedidoresModel.DAL
             {
                 using(StreamReader reader = new StreamReader(archivoTrafico))
                 {
+                    
                     string text = null;
                     do
                     {
@@ -71,7 +73,7 @@ namespace MedidoresModel.DAL
 
                         MensajeDetallado m = new MensajeDetallado() { 
                             NroSerie = Convert.ToInt32(textArray[0]),
-                            Fecha = Convert.ToDateTime(textArray[1]),
+                            Fecha = textArray[1],
                             Tipo = textArray[2],
                             Valor = Convert.ToInt32(textArray[3]),
                             Estado = textArray[4]
@@ -91,9 +93,10 @@ namespace MedidoresModel.DAL
         {
             try
             {
-                using(StreamWriter writer = new StreamWriter(archivoConsumo, true))
+                using(StreamWriter writer = new StreamWriter(archivoTrafico, true))
                 {
-                    writer.WriteLine(m);
+                    string texto = JsonConvert.SerializeObject(m);
+                    writer.WriteLine(texto.ToString());
                     writer.Flush();
                 }
             }catch(IOException ex)
@@ -108,7 +111,8 @@ namespace MedidoresModel.DAL
             {
                 using(StreamWriter writer = new StreamWriter(archivoConsumo,true))
                 {
-                    writer.WriteLine(m);
+                    string texto = JsonConvert.SerializeObject(m);
+                    writer.WriteLine(texto.ToString());
                     writer.Flush();
                 }
             }catch(IOException ex)

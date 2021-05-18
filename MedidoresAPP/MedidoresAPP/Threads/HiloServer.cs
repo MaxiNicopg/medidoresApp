@@ -23,7 +23,7 @@ namespace MedidoresAPP.Threads
             Console.WriteLine("Iniciando Server de comunicaciones...");
             if (server.Iniciar())
             {
-                Console.WriteLine("Iniciado en el puerto{0}", puerto);
+                Console.WriteLine("Iniciado en el puerto {0}", puerto);
                 while (true)
                 {
                     Console.WriteLine("Esperando conexiones de clientes...");

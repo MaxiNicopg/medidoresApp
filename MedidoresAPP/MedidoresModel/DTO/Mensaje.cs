@@ -8,13 +8,12 @@ namespace MedidoresModel.DTO
 {
     public class Mensaje
     {
-        private DateTime fecha;
-        private string nro_medidor;
+        private string fecha;
         private string tipo;
 
-        public DateTime Fecha { get => fecha; set => fecha = value; }
-        public string Nro_medidor { get => nro_medidor; set => nro_medidor = value; }
+        
         public string Tipo { get => tipo; set => tipo = value; }
+        public string Fecha { get => fecha; set => fecha = value; }
 
         /*public Mensaje(DateTime fecha, string nro_medidor, string tipo)
         {

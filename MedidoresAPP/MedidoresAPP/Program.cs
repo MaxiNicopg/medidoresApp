@@ -22,7 +22,7 @@ namespace MedidoresAPP
                 {
                     Console.WriteLine("Ingrese el nuevo puerto");
                     try {
-                        nuevoPuerto = Console.Read();
+                        nuevoPuerto = Convert.ToInt32(Console.ReadLine().Trim());
                     } catch (Exception ex)
                     {
                         Console.WriteLine("Ingrese el puerto correctamente");
@@ -42,21 +42,21 @@ namespace MedidoresAPP
             else { 
             Console.WriteLine("Puerto definido: {0}", nuevoPuerto);
             }
-            Console.ReadLine();
-            int puerto = Convert.ToInt32(ConfigurationManager.AppSettings["puerto"]);
+            /*int puerto = Convert.ToInt32(ConfigurationManager.AppSettings["puerto"]);
             HiloServer hiloServer = new HiloServer(puerto);
             Thread t = new Thread(new ThreadStart(hiloServer.Ejecutar));
             t.IsBackground = true;
             t.Start();
-            while (true) ;
-            /*
+            //while (true) ;*/
             if(nuevoPuerto == 0) {
-                try { 
-            int puerto = Convert.ToInt32(ConfigurationManager.AppSettings["puerto"]);
-            HiloServer hiloServer = new HiloServer(puerto);
-            Thread t = new Thread(new ThreadStart(hiloServer.Ejecutar));
-            t.IsBackground = true;
-            t.Start();
+                try {
+                    Console.WriteLine("Iniciando Hilo");
+                    int puerto = Convert.ToInt32(ConfigurationManager.AppSettings["puerto"]);
+                    HiloServer hiloServer = new HiloServer(puerto);
+                    Thread t = new Thread(new ThreadStart(hiloServer.Ejecutar));
+                    t.IsBackground = true;
+                    t.Start();
+                    while (true) ;
                 }
                 catch (Exception ex) {
                     Console.WriteLine("Error en la conexión del servicio" );
@@ -66,16 +66,16 @@ namespace MedidoresAPP
             {
                 try { 
                     Console.WriteLine("Iniciando Hilo");
-                    Console.ReadLine();
-                HiloServer hiloServer = new HiloServer(nuevoPuerto);
-                Thread t = new Thread(new ThreadStart(hiloServer.Ejecutar));
-                t.IsBackground = true;
-                t.Start();
+                    HiloServer hiloServer = new HiloServer(nuevoPuerto);
+                    Thread t = new Thread(new ThreadStart(hiloServer.Ejecutar));
+                    t.IsBackground = true;
+                    t.Start();
+                    while (true) ;
                 }
                 catch (Exception) {
                     Console.WriteLine("Error en la conexión del servicio");
                 }
-            }*/
+            }
         }
     }
 }

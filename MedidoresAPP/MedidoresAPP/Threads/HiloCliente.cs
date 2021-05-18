@@ -20,42 +20,70 @@ namespace MedidoresAPP.Threads
         }
         public void Ejecutar()
         {
-            string nroMedidor, tipo, mensajeCliente, estado;
-            string fechaServer;
-            int valor;
+            string tipo, mensajeCliente, estado;
+            string fechaServer, fechaCliente;
+            int valor, nroMedidor;
+            DateTime fecha1;
+            DateTime fecha2;
 
-            server.Escribir("Hola");
+
+            
             mensajeCliente = server.Leer();
             Console.WriteLine(mensajeCliente);
             fechaServer = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            //DateTime fecha = Convert.ToDateTime(fechaServer);
             server.Escribir(fechaServer+"|WAIT");
+            fecha1 = DateTime.Now;
             mensajeCliente = server.Leer();
             Console.WriteLine(mensajeCliente);
+            fecha2 = DateTime.Now;
             
 
             string[] textArray = mensajeCliente.Split('|');
-            DateTime fechaCliente = DateTime.ParseExact(textArray[1], "yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture);
-            nroMedidor = textArray[0];
+            nroMedidor = Convert.ToInt32(textArray[0]);
+            fechaCliente = textArray[1];
+            //DateTime fechaCliente = DateTime.Now;
             tipo = textArray[2];
             valor = Convert.ToInt32(textArray[3]);
             estado = textArray[4];
-
+            //TimeSpan diff = fechaCliente.Subtract(fecha);
+            //if (diff.Minutes < 30)
+            //{
+            for(int i = 0; i < textArray.Length; i++)
+            {
+                Console.WriteLine(textArray[i]);
+            }
+            //nroMedidor = Int32.Parse(textArray[0]);
+            if (fecha1.Subtract(fecha2).Minutes > 30) { server.CerrarConexion(); } else { 
             MensajeDetallado m = new MensajeDetallado()
             {
-                NroSerie = Convert.ToInt32(nroMedidor),
-                Tipo = tipo,
-                Valor = valor,
-                Estado = estado,
-                Fecha = fechaCliente
+               NroSerie = nroMedidor,
+               Fecha = fechaCliente,
+               Tipo = tipo,
+               Valor = Convert.ToInt32(valor),
+               Estado = estado
             };
-
+            
             if (tipo.Contains("consumo"))
             {
+                lock (dal) { 
                 dal.SaveConsumo(m);
-            }else if (tipo.Contains("trafico"))
-            {
-                dal.SaveTrafico(m);
+                }
+                server.CerrarConexion();
             }
+            else if (tipo.Contains("trafico"))
+            {
+                lock (dal) { 
+                dal.SaveTrafico(m);
+                }
+                server.CerrarConexion();
+            }
+            }
+            //}
+            //else
+            //{
+            //    server.CerrarConexion();
+            //}
 
         }
     }

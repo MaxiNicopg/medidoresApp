@@ -27,49 +27,102 @@ namespace ClienteApp
                 /*conServidor.Escribir("Hola mundo");
                 string mensaje = conServidor.Leer();
                 Console.WriteLine(mensaje);*/
-                string nroMedidor, tipo, mensajeServidor, estado, fecha,respuesta;
-                int valor;
+                string tipo, mensajeServidor, estado, fecha,respuesta;
+                string valor,nroMedidor;
+                int valorMedidor;
+                int valorValor;
                 do
                 {
-                    Console.WriteLine("Ingrese la id del medidor");
-                    nroMedidor = Console.ReadLine();
-                    Console.WriteLine("Ingrese tipo del medidor");
-                    tipo = Console.ReadLine().Trim().ToLower();
-                    
-                    fecha = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-                    Console.WriteLine(fecha);
-                    mensajeServidor = conServidor.Leer();
-                    Console.WriteLine(mensajeServidor);
+                    do
+                    {
+                        try
+                        {
+                            Console.WriteLine("Ingrese la id del medidor");
+                            valorMedidor = Convert.ToInt32(Console.ReadLine());
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Dato ingresado no es un valor aceptado");
+                            valorMedidor = 0;
+                        }
+                    } while (valorMedidor == 0);
+                    nroMedidor = Convert.ToString(valorMedidor);
+                    do
+                    {
+                        try { 
+                            Console.WriteLine("Ingrese tipo del medidor");
+                            tipo = Console.ReadLine().Trim().ToLower();
+                            if (tipo.Contains("consumo")) { }else if (tipo.Contains("trafico")) { } else { tipo = null;}
+                        }catch (Exception ex) {
+                            tipo = null;
+                            Console.WriteLine("Ingrese un tipo correspondiente");
+                        }
+                    } while (tipo == null);
+                    fecha = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");              
                     conServidor.Escribir( fecha + '|' + nroMedidor + '|' + tipo);
 
                     mensajeServidor = conServidor.Leer();
                     Console.WriteLine(mensajeServidor);
                     if (mensajeServidor.Contains("WAIT"))
-                    { }
+                    {
+
+
+                    }
                     else
                     {
                         mensajeServidor = null;
                     }
+                   
+                        do { 
+                            try { 
+                                Console.WriteLine("Ingrese valor:");
+                                valorValor = Convert.ToInt32(Console.ReadLine());
+                                if(valorValor>1000 || valorValor < 0)
+                                {
+                                    valorValor = 2000;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                valorValor = 2000;
+                                Console.WriteLine("El dato ingresado no está dentro de los parametros");
+                            }
+                        } while (valorValor == 2000);
+                    valor = Convert.ToString(valorValor);
+                    do { 
+                                Console.WriteLine("¿Desea ingresar estado?");
+                                respuesta = Console.ReadLine().Trim().ToLower();
+                                if (respuesta.Contains("si"))
+                                {
+                                Console.WriteLine("Ingrese estado");
+                                estado = Console.ReadLine();
+                                if (estado == "-1") { } else if (estado == "0") { } else if (estado == "1") { } else if (estado == "2") { } else { estado = "error"; }
+                                }   
+                                else if (respuesta.Contains("no"))
+                                {
+                                estado = null;
+                                }
+                                else
+                                {
+                                    respuesta = null;Console.WriteLine("Ingrese el texto correspondiente");
+                                    estado = "error";
+                                }
+                    } while (respuesta == null || estado == "error");
 
+                    
                 } while (mensajeServidor == string.Empty);
-                
-                    Console.WriteLine("Ingrese valor: ");
-                    valor = Console.Read();
-                    Console.WriteLine("¿Desea ingresar estado?");
-                    respuesta = Console.ReadLine().Trim().ToLower();
+                    
+                    
                     fecha = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-                    if (respuesta.Contains("si"))
-                    {
-                        Console.WriteLine("Ingrese estado:");
-                        estado = Console.ReadLine();
-                        conServidor.Escribir(nroMedidor + '|' + fecha + '|' + tipo + '|' + valor + '|' + estado + '|' + "UPDATE");
-                    }
-                    else
-                    {
-                        conServidor.Escribir(nroMedidor + '|' + fecha + '|' + tipo + '|' + valor + '|' + "UPDATE");
-                        mensajeServidor = conServidor.Leer();
-                        estado = null;
-                    }
+                
+                if (estado != null)
+                {
+                    conServidor.Escribir(nroMedidor + '|' + fecha + '|' + tipo + '|' + valor + '|' + estado + '|' + "UPDATE");
+                }
+                else
+                {
+                    conServidor.Escribir(nroMedidor + '|' + fecha + '|' + tipo + '|' + valor + '|' +"sin lectura"+'|'+ "UPDATE");
+                }
 
                 conServidor.CerrarConexion();
                 Console.WriteLine("Conexión cerrada");
