@@ -102,7 +102,7 @@ namespace MedidoresAPP.Threads
                 lock (dal) { 
                 dal.SaveConsumo(m);
                 }
-                        server.Escribir(nroMedidor + '|' + "OK");
+                        server.Escribir(nroMedidor.ToString() + '|' + "OK");
                         server.CerrarConexion();
             }
             else if (tipo.Contains("trafico"))

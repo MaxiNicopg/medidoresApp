@@ -72,6 +72,7 @@ namespace ClienteApp
                     {
                         Console.WriteLine("El medidor ingresado no existe en el sistema");
                         conServidor.CerrarConexion();
+                        Console.ReadKey();
                         return;
                         
                     }
