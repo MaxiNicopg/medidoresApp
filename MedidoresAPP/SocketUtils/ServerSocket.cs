@@ -64,22 +64,20 @@ namespace SocketUtils
                 return null;
             }
         }
-        public bool ObtenerCliente()
+        public EnlaceSocket ObtenerCliente()
         {
             try
             {
-                this.comCliente = this.servidor.Accept();
-                Stream stream = new NetworkStream(this.comCliente);
-                this.writer = new StreamWriter(stream);
-                this.reader = new StreamReader(stream);
-                return true;
+                return new EnlaceSocket(this.servidor.Accept());
             }
             catch (Exception ex)
             {
 
-                return false;
+                return null;
             }
         }
+
+
         public void CerrarConexion()
         {
             comCliente.Close();

@@ -15,9 +15,9 @@ namespace MedidoresAPP.Threads
         
         List<int> medidores = new List<int> {1234, 1235, 1236, 1237, 1238};
 
-        ServerSocket server;
+        EnlaceSocket server;
         static IMensajeDetalladoDAL dal = MensajeDetalladoDALFactory.CreateDAL();
-        public HiloCliente(ServerSocket server)
+        public HiloCliente(EnlaceSocket server)
         {
             this.server = server;
         }
@@ -110,7 +110,7 @@ namespace MedidoresAPP.Threads
                 lock (dal) { 
                 dal.SaveTrafico(m);
                 }
-                        server.Escribir(nroMedidor + '|' + "OK");
+                        server.Escribir(nroMedidor.ToString() + '|' + "OK");
                         server.CerrarConexion();
             }
             }
